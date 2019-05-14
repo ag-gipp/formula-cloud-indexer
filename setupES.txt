@@ -1,0 +1,77 @@
+curl -X PUT "localhost:9200/arxiv?pretty" -H 'Content-Type: application/json' -d'
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "custom_english_stemmer": {
+          "type": "stemmer",
+          "name": "english"
+        },
+        "english_stopwords": {
+          "type": "stop",
+          "stopwords": "_english_"
+        }
+      },
+      "analyzer": {
+        "arxiv_analyzer": {
+          "tokenizer": "standard",
+          "filter": [
+            "asciifolding",
+            "lowercase",
+            "custom_english_stemmer",
+            "english_stopwords"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "title": {
+          "type": "text",
+          "index": "false"
+        },
+        "content": {
+          "type": "text",
+          "analyzer": "arxiv_analyzer"
+        }
+      }
+    }
+  }
+}
+'
+
+curl -X POST "localhost:9200/customer/_update/1?pretty" -H 'Content-Type: application/json' -d'
+{
+  "doc": { "name": "Jane Doe" }
+}
+'
+
+
+curl -X DELETE "localhost:9200/test?pretty"
+curl -X GET "localhost:9200/_cat/indices?v"
+
+curl -X GET "localhost:9200/arxiv/_doc/gr-qc0008046?pretty"
+
+
+curl -X POST "localhost:9200/arxiv-no-problem/_analyze?pretty" -H 'Content-Type: application/json' -d'
+{
+  "analyzer" : "arxiv_analyzer",
+  "text" : "Mass-Energy Equivalence"
+}
+'
+
+curl -X POST "localhost:9200/_analyze" -H 'Content-Type: application/json' -d'
+{
+  "analyzer": "standard",
+  "text": "The 2 QUICK Brown-Foxes jumped over the lazy dog\u0027s bone."
+}
+'
+
+
+curl -X PUT "localhost:9200/customer/_doc/1?pretty" -H 'Content-Type: application/json' -d'
+{
+  "name": "John Doe"
+}
+'

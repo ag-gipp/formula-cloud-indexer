@@ -1,0 +1,16 @@
+{
+  "name": "arxiv-elasticsearch",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@elastic/elasticsearch": "^7.0.0-rc.2",
+    "bluebird": "^3.5.4",
+    "body-parser": "latest",
+    "ejs": "latest",
+    "express": "latest",
+    "p-queue": "^5.0.0"
+  },
+  "scripts": {
+    "start": "node arxiv-processor.js"
+  }
+}
